@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var glob = require('glob');
 var mysql = require('mysql');
-const config = require('./config')
+const config = require('./config');
 
 var app = express();
 
@@ -24,7 +24,7 @@ var con = mysql.createConnection({
   host: config.host,
   user: config.user,
   password: config.dbPassword,
-  database: config.database
+  database: config.database	
 });
 
 con.connect(function(err) {
@@ -34,19 +34,18 @@ con.connect(function(err) {
   		Id int NOT NULL AUTO_INCREMENT,
   		Email VARCHAR(255) UNIQUE NOT NULL,
   		Password VARCHAR(255) NOT NULL,
-  		Name VARCHAR(255) NOT NULL,
+      Name VARCHAR(255),
   		PRIMARY KEY (id)
-  	);`
-, function (err, result) {
-    if (err) throw err;
-    console.log("Table created");
+  	);`, function (err, result) {
+    	if (err) throw err;
+    	console.log("Table created");
   });
 });
 
 /* Configure routes */
 var routes = glob.sync('./routes/*.js');
 routes.forEach(function(route) {
-	require(route)(app);
+  require(route)(app, con);
 })
 
 // catch 404 and forward to error handler
@@ -65,6 +64,5 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-
-
 module.exports = app;
+
