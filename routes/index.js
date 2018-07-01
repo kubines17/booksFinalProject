@@ -7,5 +7,13 @@ module.exports = function(app, db) {
 		res.render('index', {});
 	});
 
+	router.get('/add_book',function(req, res) {
+		res.render('add_book', {});
+	});
+
+	router.post('/add_book',function(req, res) {
+		res.render('add_book', {});
+	});
+
 	app.use('/', router);
 };

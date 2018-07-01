@@ -30,16 +30,34 @@ var con = mysql.createConnection({
 con.connect(function(err) {
   if (err) throw err;
   console.log("Connected!");
-  con.query(`CREATE TABLE IF NOT EXISTS User (
-  		Id int NOT NULL AUTO_INCREMENT,
-  		Email VARCHAR(255) UNIQUE NOT NULL,
-  		Password VARCHAR(255) NOT NULL,
+  var user = `CREATE TABLE IF NOT EXISTS User (
+      Id int NOT NULL AUTO_INCREMENT,
+      Email VARCHAR(255) UNIQUE NOT NULL,
+      Password VARCHAR(255) NOT NULL,
       Name VARCHAR(255),
-  		PRIMARY KEY (id)
-  	);`, function (err, result) {
+      PRIMARY KEY (id)
+    );`
+  var library = `CREATE TABLE IF NOT EXISTS library (
+      Id int NOT NULL AUTO_INCREMENT,
+      Author VARCHAR(255) NOT NULL,
+      Title VARCHAR(255) NOT NULL,
+      Description VARCHAR(255) NOT NULL,
+      Image_link VARCHAR(255) NOT NULL,
+      PRIMARY KEY (id)
+    );`
+  con.query(user, function (err, result) {
     	if (err) throw err;
     	console.log("Table created");
   });
+  con.query(library, function (err, result) {
+      if (err) throw err;
+      console.log("Table created");
+  });
+});
+
+app.use(function(req, res, next) {
+  res.locals.user = req.cookies.user
+  next();
 });
 
 /* Configure routes */
@@ -65,4 +83,3 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
-

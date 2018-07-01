@@ -1,0 +1,29 @@
+<%- include('./header.ejs', {path: '../'}); %>
+<fieldset>
+	<legend> Add new book </legend>
+		<form action="/add_book" method="POST" enctype="multipart/form-data">
+			
+			<p> Input title: </p>
+			<input type="text" name="title" size="100">
+			
+			<br>
+			<br>
+			Input author:
+			<input type="text" name="author" size="100">
+			
+			<br>
+			<br>
+			Input description:
+			<textarea name="description" cols=100 rows=6></textarea>
+			
+			<br>
+			<br>
+			Add image:
+			<input type="file" name="Image" accept="image/*">
+			
+			<br>
+			<br>
+			<input type="submit" value="Submit">
+	</form>
+</fieldset>
+<%- include('./footer.ejs', {path: '../'}); %>
