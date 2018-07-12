@@ -1,8 +1,11 @@
 var express = require('express');
 var router = express.Router();
 var sendEmail = require('../helpers/sendEmail')
+const config = require('../config')
+var hash = require('../helpers/generateHash')
+var async = require('async');
 
-module.exports = function(app, conn) {
+module.exports = function(app, db) {
 
 	router.get('/signup',function(req, res) {
 		res.render('signup', {});
@@ -14,42 +17,34 @@ module.exports = function(app, conn) {
 
 
 	router.post('/signup',function(req, res) {
-		var sql = "INSERT INTO User (Email, Password) VALUES ('%Email', '%Password')";
+		db.User.create({
+			Email: req.body.email,
+        	Password: hash(req.body.pass)
+        });
+		res.send('done')
+	});
 			
-		sql = sql.replace('%Email', req.body.email)
-		sql = sql.replace('%Password', req.body.pass)
-
-
-		conn.query(sql, function (err, result) {
-			console.log(err)
-			if (err) {
-				res.send('Can not login')
-			} else {
-				sendEmail(req.body.email, 'Добрый день!', 'Вы зарегистрировались на Book.kg')
-				res.render('index')
-			}
-		});
-	});
-
 	router.post('/signin',function(req, res) {
-		var sql = "select * FROM User where email = '%Email' and Password = '%Password'";
-		
-		sql = sql.replace('%Email', req.body.email)
-		sql = sql.replace('%Password', req.body.pass)
-
-		conn.query(sql, function (err, user) {
-			if(user.length == 0) { //result.length == 0 
-				res.render('signin', {message: 'Не верный логин или пароль'})				
+		db.User.findOne({
+  		where: {email: req.body.email,
+  				password: hash(req.body.pass)},
+		}).then(project => {
+			console.log(project)
+			//console.log(project.dataValues.Password)
+			if(project == null) {
+				res.send('Не верный логин или пароль')				
 			} else {
-				//save cookie
-				res.cookie('user', user[0])
-				//send email to user
-				res.redirect('/')
-			}
-		});
+				for(elem of config.admins) {
+					if (project.dataValues.Email == elem) {
+						res.cookie('admin', true)
+					}
+				}	
+					res.cookie('user', project.dataValues.Email)
+					
+				}
+			res.redirect('/')
+		})
 	});
-
-	
 
 	app.use('/users', router);
 };

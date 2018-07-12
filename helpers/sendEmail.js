@@ -5,16 +5,13 @@ module.exports = function(email, subject, text) {
 	let nodemailer = require('nodemailer');
 	// create reusable transporter object using the default SMTP transport
 	var transporter = nodemailer.createTransport({
-		host: 'smtp.mail.ru',
+		host: 'smtp.gmail.com',
 		port: 465,
 		secure: true, // secure:true for port 465, secure:false for port 587
 		auth: {
 			user: config.gmailLogin, //from our email
 			pass: config.gmailPassword //from our email
-		},
-		tls: {
-        rejectUnauthorized: false
-    	}
+		}
 	});
 
 	/* in case of typo */
@@ -22,7 +19,7 @@ module.exports = function(email, subject, text) {
 
 	// setup email data with unicode symbols
 	var mailOptions = {
-		from: 'kuba_kuba_85@list.ru',
+		from: '',
 		to: email, // list of receivers
 		subject: subject,
 		text: text + footer
@@ -33,6 +30,6 @@ module.exports = function(email, subject, text) {
 		if (error) {
 			console.log(error);
 		}
-		//console.log('Message %s sent: %s', info.messageId, info.response);
+		console.log('Message %s sent: %s', info.messageId, info.response);
 	});	
 }

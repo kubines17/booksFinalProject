@@ -3,9 +3,10 @@ var router = express.Router();
 
 module.exports = function(app, db) {
 
-	router.get('/login',function(req, res) {
-		res.render('login', {});
+
+	router.get('/',function(req, res) {
+		res.render('admin')
 	});
 
-	app.use('/', router);
+	app.use('/admin', router);
 };

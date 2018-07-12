@@ -20,50 +20,22 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-var con = mysql.createConnection({
-  host: config.host,
-  user: config.user,
-  password: config.dbPassword,
-  database: config.database	
-});
-
-con.connect(function(err) {
-  if (err) throw err;
-  console.log("Connected!");
-  var user = `CREATE TABLE IF NOT EXISTS User (
-      Id int NOT NULL AUTO_INCREMENT,
-      Email VARCHAR(255) UNIQUE NOT NULL,
-      Password VARCHAR(255) NOT NULL,
-      Name VARCHAR(255),
-      PRIMARY KEY (id)
-    );`
-  var library = `CREATE TABLE IF NOT EXISTS library (
-      Id int NOT NULL AUTO_INCREMENT,
-      Author VARCHAR(255) NOT NULL,
-      Title VARCHAR(255) NOT NULL,
-      Description VARCHAR(255) NOT NULL,
-      Image_link VARCHAR(255) NOT NULL,
-      PRIMARY KEY (id)
-    );`
-  con.query(user, function (err, result) {
-    	if (err) throw err;
-    	console.log("Table created");
-  });
-  con.query(library, function (err, result) {
-      if (err) throw err;
-      console.log("Table created");
-  });
-});
+var db = require('./db/index')
 
 app.use(function(req, res, next) {
+  //set user value
   res.locals.user = req.cookies.user
+
+  //ser admin value
+  res.locals.admin = (req.cookies.admin)?true:false
+
   next();
 });
 
 /* Configure routes */
 var routes = glob.sync('./routes/*.js');
 routes.forEach(function(route) {
-  require(route)(app, con);
+  require(route)(app, db);
 })
 
 // catch 404 and forward to error handler
