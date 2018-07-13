@@ -16,16 +16,29 @@ module.exports = function(app, db) {
 
 
 	router.post('/add', upload.any(), function(req, res) {
-		db.Book.create({
-			title: req.body.email,
-        	author: req.body.author,
-        	description: req.body.description,
-        	image: req.files[0].filename,
-        });
-		res.send(req.body)
-		
 
+		db.Book.create({
+			title: req.body.title,
+			author: req.body.author,
+			description: req.body.description,
+			image: req.files[0].filename
+		})
+
+		res.send(req.body)
 	});
-	
+
+	router.get('/:id', function(req, res) {
+		db.Book.findOne({ 
+			where: {
+				id: req.params.id
+			}}).then(bookOne => {
+				if(!bookOne) { 
+					var data = bookOne
+					res.send('No book with such id')				
+				} else {
+					res.send(bookOne)
+				}
+			})
+		});
 	app.use('/books', router);
 };

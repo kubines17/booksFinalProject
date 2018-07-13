@@ -5,6 +5,9 @@ var request = require('request');
 const cheerio = require('cheerio');
 const utf8 = require('utf8');
 var async = require('async');
+var saveImage = require('../helpers/downloadImage')
+var getName = require('../helpers/getName')
+var decode = require('../helpers/decode')
 
 module.exports = function(app, db) {
 
@@ -15,7 +18,7 @@ module.exports = function(app, db) {
 				parseSingleBook('https://mybook.ru' + elem).then(function(resolve, reject){
 					db.Book.create({
 						title: resolve.title,
-				        author: '',
+				        author: resolve.author,
 				        description: resolve.description,
 				        image: resolve.image
 					});
@@ -62,22 +65,35 @@ module.exports = function(app, db) {
 				var title = utf8.decode($('div .book-page-book-name').text())
 				var description = utf8.decode($('div .definition-section').children().first().text())
 				var image = $('div .book-cover').find('img').attr('src')
+				var author = decode($('div .book-page-author').find('a').text())
+
+				var imageName = getName(image)
+
+				saveImage(image, 'public/img/' + imageName , function(){
+				  console.log('Done')
+				});
 
 				//remove trash signs
 				title = title.replace(/ /g,'')
 				title = title.replace(/\n/g,'')
+				author = author.replace(/ /g,'')
+				author = author.replace(/\n/g,'')
+
 
 				resolve({
 					title,
-					author: '',
+					author,
 					description,
-					image
+					image: imageName
 				})
+
+				
 			});
 		});
 
 		return promise
 	}
+
 
 
 	app.use('/parse', router);

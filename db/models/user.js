@@ -5,9 +5,11 @@ module.exports = (sequelize, type) => {
           primaryKey: true,
           autoIncrement: true
         },
-        Email: type.STRING,
-        Password: type.STRING,
+        email: {
+          type: type.STRING,
+          allowNull: false,
+          defaultValue: false
+        },
+        password: type.STRING,
     })
 }
-
-

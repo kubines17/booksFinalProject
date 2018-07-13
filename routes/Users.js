@@ -3,7 +3,6 @@ var router = express.Router();
 var sendEmail = require('../helpers/sendEmail')
 const config = require('../config')
 var hash = require('../helpers/generateHash')
-var async = require('async');
 
 module.exports = function(app, db) {
 
@@ -18,31 +17,32 @@ module.exports = function(app, db) {
 
 	router.post('/signup',function(req, res) {
 		db.User.create({
-			Email: req.body.email,
-        	Password: hash(req.body.pass)
-        });
-		res.send('done')
+			email: req.body.email,
+	        password: hash(req.body.pass)
+		});
+		
+		res.render('index')
 	});
-			
+
 	router.post('/signin',function(req, res) {
-		db.User.findOne({
-  		where: {email: req.body.email,
-  				password: hash(req.body.pass)},
-		}).then(project => {
-			console.log(project)
-			//console.log(project.dataValues.Password)
-			if(project == null) {
-				res.send('Не верный логин или пароль')				
-			} else {
-				for(elem of config.admins) {
-					if (project.dataValues.Email == elem) {
-						res.cookie('admin', true)
+		db.User.findOne({ 
+			where: {
+				email: req.body.email,
+				password: hash(req.body.pass)
+			}}).then(user => {
+				if(!user) { 
+					res.render('signin', {message: 'Не верный логин или пароль'})				
+				} else {
+					for(elem of config.admins) {
+						if(elem == user.email) {
+							res.cookie('admin', true)
+						}
 					}
-				}	
-					res.cookie('user', project.dataValues.Email)
-					
+
+					//save cookie
+					res.cookie('user', user)
+					res.redirect('/')
 				}
-			res.redirect('/')
 		})
 	});
 

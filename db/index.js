@@ -1,9 +1,8 @@
 const Sequelize = require('sequelize')
 const BookModel = require('./models/book')
 const UserModel = require('./models/user')
-const config = require('../config')
 
-const sequelize = new Sequelize('myBooks', 'root', config.dbPassword, {
+const sequelize = new Sequelize('myBooks', 'root', '1234', {
   host: 'localhost',
   dialect: 'mysql',
   dialectOptions: {
