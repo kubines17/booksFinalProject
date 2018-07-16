@@ -12,10 +12,10 @@
                                 <% for(var i = 0; i < books.length; i++) { %>
                                     <div class="masonry__item col-sm-6 col-md-3" data-masonry-filter="Creative">
                                         <div class="product">
-                                            <a href="/single/<%= books[i].id %>">
+                                            <a href="/books/single/<%= books[i].id %>">
                                                 <img alt="Image" src="img/<%= books[i].image %>" />
                                             </a>
-                                            <a class="block" href="/single/<%= books[i].id %>">
+                                            <a class="block" href="#">
                                                 <div>
                                                     <h5><%= books[i].title %></h5>
                                                     <span><%= books[i].author %></span>

@@ -14,11 +14,55 @@ module.exports = function(app, db) {
 		res.render('signin', {message: null});
 	});
 
+	router.get('/profile',function(req, res) {
+		res.render('profile');
+	});
 
+	router.get('/logout',function(req, res) {
+		res.clearCookie("user");
+		res.clearCookie("admin");
+		res.redirect('/');
+	});
+
+	router.post('/update/info',function(req, res) {
+		db.User.update(
+			{
+				name: req.body.name,
+				phone: req.body.phone
+			},
+			{where: {id: req.body.id}}
+		).then(function() {
+			db.User.findOne({where: {id: req.body.id}}).then(function(user){
+				res.cookie('user', user)
+				res.redirect('/users/profile')
+			})
+
+		})
+	});
+
+	router.post('/password/update',function(req, res) {
+		if(req.body.newPassword != req.body.confirmPassword){
+			res.send("Пароли не совпадают")
+		}
+		else {
+		db.User.update(
+			{
+				password: hash(req.body.newPassword)
+			},
+			{where: {id: req.body.id,
+			password: hash(req.body.oldPassword)
+		}}).then(function(user){
+				console.log(user)
+				res.clearCookie("user");
+				res.redirect('/')
+				})
+			}
+		})
+	
 	router.post('/signup',function(req, res) {
 		db.User.create({
 			email: req.body.email,
-	        password: hash(req.body.pass)
+			password: hash(req.body.pass)
 		});
 		
 		res.render('index')

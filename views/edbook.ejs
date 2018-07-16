@@ -1,0 +1,42 @@
+<%- include('./header.ejs', {path: '../'}); %>
+
+<div class="main-container">
+	<section class="space--sm">
+			<div class="container">
+				<div class="col-sm-7 col-md-5">
+					<% if (book) { %>
+					<form action="/books/change/update" method="POST" enctype="multipart/form-data">
+						<div class="row">
+							<div class="col-sm-12">
+								<input type="text" value="<%= book.id %>" name="id"/>
+							</div>
+							<div class="col-sm-12">
+								<input type="text" value="<%= book.title %>" name="title"/>
+							</div>
+							<div class="col-sm-12">
+								<input type="text" value="<%= book.author %>" name="author"/>
+							</div>
+							<div class="col-sm-12" class="perenos">
+								<input type="text" value="<%= book.description %>" name="description" style="width: 900px;"/>
+							</div>
+							<div class="col-sm-12">
+								<h6> <%= book.image %> </h6>
+							</div>
+							<div class="col-sm-12">
+								<input type="file" name="image" accept="image/*">
+							</div>
+							<div class="col-sm-12">
+								<button class="btn btn--primary type--uppercase" type="submit">Change book</button>
+							</div>
+						</div>
+						<!--end of row-->
+					</form>
+					<% } %>
+				</div>
+			</div>
+		
+	</section>
+</div>
+			
+<%- include('./footer.ejs', {path: '../'}); %>
+

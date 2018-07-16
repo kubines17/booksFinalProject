@@ -8,10 +8,5 @@ module.exports = function(app, db) {
 		res.redirect('/books')
 	});
 
-	router.get('/single/:id', function(req, res) {
-		res.render('single',{})
-		});
-
 	app.use('/', router);
 };
-

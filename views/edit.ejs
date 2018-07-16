@@ -1,0 +1,27 @@
+<%- include('./header.ejs', {path: '../'}); %>
+
+<section class="space--sm">
+		<div class="container">
+		<table border="1">
+		   <tr>
+				<th>ID</th>
+				<th>Название</th>
+				<th>Автор</th>
+				<th>Описание</th>
+				<th>Обложка</th>
+		   </tr>
+		   <% for(var i = 0; i < books.length; i++) { %>
+			   <tr>
+			   	<td><%= books[i].id %></td>
+			   	<td><%= books[i].title %></td>
+			   	<td><%= books[i].author %></td>
+			   	<td><%= books[i].description %></td>
+			   	<td><%= books[i].image %></td>
+			   	<td><a href="/books/change?id=<%= books[i].id %>">Редактировать</a> </td>
+			   </tr>
+			<% } %>
+		</table>
+		</div>
+	</section>
+
+<%- include('./footer.ejs', {path: '../'}); %>
